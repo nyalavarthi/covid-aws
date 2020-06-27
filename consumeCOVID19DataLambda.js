@@ -6,6 +6,8 @@ var covid_data = null;
 exports.handler = async (event, context) => {
     let dataString = '';
     // Environment variables for S3 Bucket & API
+    //1. DATA_BUCKET = your bucket name  ( Not arn) 
+    //2. STATES_API = https://covidtracking.com/api/states
     var STATES_API = process.env.STATES_API;
     var BUCKET = process.env.DATA_BUCKET;
 
@@ -32,22 +34,20 @@ exports.handler = async (event, context) => {
         });
     });
     // Save JSON response into S3
-    //console.log("end of promise", covid_data);
-    //console.log("bucket name ", BUCKET);
     var key = "covid-data-"+Date.now()+".json";
     var params = {
         Body: JSON.stringify(dataString),
         Bucket: BUCKET,
         Key: key
     };
-    const result =  await putObjectWrapper(params);
+    const result =  await putObject(params);
     //console.log("result of put ", result);
     
     return response;
 };
 
-
-const putObjectWrapper = (params) => {
+// save data to S3.
+const putObject = (params) => {
   return new Promise((resolve, reject) => {
     s3.putObject(params, function (err, result) {
       if(err) reject(err);
