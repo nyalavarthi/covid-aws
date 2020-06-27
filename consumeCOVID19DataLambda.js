@@ -1,7 +1,6 @@
 const aws = require('aws-sdk');
 const s3 = new aws.S3();
 const https = require('https');
-var covid_data = null;
 
 exports.handler = async (event, context) => {
     let dataString = '';
@@ -22,7 +21,6 @@ exports.handler = async (event, context) => {
                 body: JSON.stringify(JSON.parse(dataString), null, 4)
             });
             
-            covid_data = dataString
           });
         });
         
@@ -41,8 +39,7 @@ exports.handler = async (event, context) => {
         Key: key
     };
     const result =  await putObject(params);
-    //console.log("result of put ", result);
-    
+
     return response;
 };
 
